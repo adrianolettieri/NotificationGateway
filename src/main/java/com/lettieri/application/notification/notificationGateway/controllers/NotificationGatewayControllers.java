@@ -9,19 +9,15 @@ import com.lettieri.application.notification.notificationGateway.services.Gatewa
 import com.lettieri.application.notification.notificationGateway.services.SmsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("send")
 @AllArgsConstructor
 public class NotificationGatewayControllers {
 
     GatewayServiceFactory gatewayServiceFactory;
 
-    @PostMapping()
+    @PostMapping("/send")
     public ResponseEntity<NotificationResponse> sendNotification(@RequestBody NotificationRequest notificationRequest) {
         GatewayService gatewayService = gatewayServiceFactory.getGatewayService(notificationRequest.getNotificationMode());
         gatewayService.send(notificationRequest);
@@ -30,5 +26,10 @@ public class NotificationGatewayControllers {
                         .status("SUCCESS")
                         .statusDescription("Notification Received Successfully")
                 .build());
+    }
+
+    @GetMapping("/healthcheck")
+    public String healthCheck (){
+        return "UP";
     }
 }
